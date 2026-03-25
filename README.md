@@ -213,6 +213,37 @@ os-cleaner list --json
 | Firefox | All | Firefox cache |
 | Safari | macOS | Safari cache |
 
+### macOS Library
+
+| Category | Safety | Description |
+|----------|--------|-------------|
+| pnpm Cache | Safe | pnpm global store |
+| Biome Cache | Safe | Biome language server cache |
+| Python Cache | Safe | Python versions under Library |
+| DuetExpertCenter | Safe | Spotlight indexing cache |
+| WebKit Cache | Safe | WebKit browser engine cache |
+| HTTP Storage Cache | Safe | HTTP request/response cache |
+| Spotlight Metadata | Safe | Spotlight search index |
+| App Containers | Caution | App sandbox data |
+| Group Containers | Caution | Shared app containers |
+
+### Application Support (macOS)
+
+| Category | Safety | Description |
+|----------|--------|-------------|
+| Trae | Caution | Trae IDE cache |
+| Trae CN | Caution | Trae CN IDE cache |
+| Claude | Caution | Claude desktop app |
+| Cursor | Caution | Cursor IDE cache |
+| Google | Caution | Google apps data |
+| Lark/Feishu | Caution | Lark app cache |
+| Quark | Caution | Quark browser cache |
+| Discord | Caution | Discord app cache |
+| Doubao | Caution | Doubao AI app cache |
+| CherryStudio | Caution | CherryStudio cache |
+| Qoder | Caution | Qoder app cache |
+| CloudDocs | Caution | iCloud Documents cache |
+
 ## Safety Levels
 
 - **Safe**: Can be deleted without any risk

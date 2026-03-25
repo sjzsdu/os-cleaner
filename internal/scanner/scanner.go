@@ -15,16 +15,58 @@ import (
 	"github.com/juzhongsun/os-cleaner/internal/utils"
 )
 
-var spinChars = []string{"|", "/", "-", "\\"}
-var spinIndex = 0
+// Scan performs the scan operation
+func Scan(opts ScanOptions) error {
+	var results []ScanResult
+	var wg sync.WaitGroup
 
-func printProgress(completed, total int, currentName string) {
-	if completed == total {
-		fmt.Println()
-		return
+	categories := registry.GetCategoriesByPlatform()
+
+	if opts.Category != "" {
+		filtered := []registry.CacheCategory{}
+		for _, c := range categories {
+			if c.ID == opts.Category {
+				filtered = append(filtered, c)
+				break
+			}
+		}
+		categories = filtered
+		if len(categories) == 0 {
+			return fmt.Errorf("category not found: %s", opts.Category)
+		}
 	}
 
-	fmt.Printf("\r  Scanning %s", spinChars[spinIndex%len(spinChars)])
+	resultsChan := make(chan ScanResult, len(categories))
+
+	progress := utils.NewProgress(len(categories))
+	progress.Start()
+
+	for _, cat := range categories {
+		wg.Add(1)
+		go func(cat registry.CacheCategory) {
+			defer wg.Done()
+			result := scanCategory(cat, opts)
+			progress.Increment(cat.Name)
+			resultsChan <- result
+		}(cat)
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultsChan)
+	}()
+
+	for result := range resultsChan {
+		results = append(results, result)
+	}
+
+	progress.Stop()
+
+	if opts.JSON {
+		return outputJSON(results)
+	}
+
+	return outputTable(results, opts.Verbose, opts.ShowStale, opts.OlderThan)
 }
 
 // ScanResult represents the scan result for a category
@@ -49,72 +91,6 @@ type ScanOptions struct {
 	Category  string
 	ShowStale bool
 	OlderThan time.Duration
-}
-
-// Scan performs the scan operation
-func Scan(opts ScanOptions) error {
-	var results []ScanResult
-	var wg sync.WaitGroup
-
-	categories := registry.GetCategoriesByPlatform()
-
-	// Filter by category if specified
-	if opts.Category != "" {
-		filtered := []registry.CacheCategory{}
-		for _, c := range categories {
-			if c.ID == opts.Category {
-				filtered = append(filtered, c)
-				break
-			}
-		}
-		categories = filtered
-		if len(categories) == 0 {
-			return fmt.Errorf("category not found: %s", opts.Category)
-		}
-	}
-
-	// Create scan result channel
-	resultsChan := make(chan ScanResult, len(categories))
-
-	// Simple spinner - just print dots
-	go func() {
-		for {
-			select {
-			case <-time.After(500 * time.Millisecond):
-				fmt.Print(".")
-			}
-		}
-	}()
-
-	// Wait for all scans to complete
-
-	// Parallel scanning
-	for _, cat := range categories {
-		wg.Add(1)
-		go func(cat registry.CacheCategory) {
-			defer wg.Done()
-			result := scanCategory(cat, opts)
-			resultsChan <- result
-		}(cat)
-	}
-
-	// Wait for all scans to complete
-	go func() {
-		wg.Wait()
-		close(resultsChan)
-	}()
-
-	// Collect results
-	for result := range resultsChan {
-		results = append(results, result)
-	}
-
-	// Output results
-	if opts.JSON {
-		return outputJSON(results)
-	}
-
-	return outputTable(results, opts.Verbose, opts.ShowStale, opts.OlderThan)
 }
 
 func scanCategory(cat registry.CacheCategory, opts ScanOptions) ScanResult {

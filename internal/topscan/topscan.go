@@ -60,7 +60,7 @@ func Scan(opts TopOptions) error {
 		return nil
 	}
 
-	items := computeSizes(targetPath, entries)
+	items := computeSizes(targetPath, entries, !opts.JSON)
 
 	sort.Slice(items, func(i, j int) bool {
 		return items[i].Size > items[j].Size
@@ -78,9 +78,15 @@ func Scan(opts TopOptions) error {
 	return nil
 }
 
-func computeSizes(basePath string, entries []os.DirEntry) []TopItem {
+func computeSizes(basePath string, entries []os.DirEntry, showProgress bool) []TopItem {
 	items := make([]TopItem, len(entries))
 	var wg sync.WaitGroup
+
+	var progress *utils.Progress
+	if showProgress {
+		progress = utils.NewProgress(len(entries))
+		progress.Start()
+	}
 
 	for i, entry := range entries {
 		wg.Add(1)
@@ -97,6 +103,9 @@ func computeSizes(basePath string, entries []os.DirEntry) []TopItem {
 			if err != nil {
 				item.Size = 0
 				items[idx] = item
+				if progress != nil {
+					progress.Increment(e.Name())
+				}
 				return
 			}
 

@@ -415,4 +415,220 @@ var categories = []CacheCategory{
 			{Path: "~/.cache/terraform"},
 		},
 	},
+
+	// ==================== macOS Library - Safe ====================
+	{
+		ID:          "pnpm-cache",
+		Name:        "pnpm Cache",
+		Description: "pnpm global store and cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/pnpm"},
+		},
+	},
+	{
+		ID:          "biome-cache",
+		Name:        "Biome Cache",
+		Description: "Biome language server cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/Biome"},
+		},
+	},
+	{
+		ID:          "macos-python-cache",
+		Name:        "macOS Python Cache",
+		Description: "Python versions and packages under Library",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/Python"},
+		},
+	},
+	{
+		ID:          "duet-cache",
+		Name:        "DuetExpertCenter Cache",
+		Description: "Spotlight indexing cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/DuetExpertCenter"},
+		},
+	},
+	{
+		ID:          "webkit-cache",
+		Name:        "WebKit Cache",
+		Description: "WebKit browser engine cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/WebKit"},
+		},
+	},
+	{
+		ID:          "http-storage-cache",
+		Name:        "HTTP Storage Cache",
+		Description: "HTTP request/response cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/HTTPStorages"},
+		},
+	},
+	{
+		ID:          "spotlight-metadata",
+		Name:        "Spotlight Metadata",
+		Description: "Spotlight search index metadata",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/Library/Metadata"},
+		},
+	},
+
+	// ==================== macOS Library - Caution ====================
+	{
+		ID:          "macos-containers",
+		Name:        "App Containers",
+		Description: "App sandbox container data (deletes app data)",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Containers"},
+		},
+	},
+	{
+		ID:          "macos-group-containers",
+		Name:        "Group Containers",
+		Description: "Shared app group container data",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Group Containers"},
+		},
+	},
+
+	// ==================== Application Support - Individual Apps ====================
+	{
+		ID:          "appsupport-trae",
+		Name:        "Trae Cache",
+		Description: "Trae IDE cache and data",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Trae"},
+		},
+	},
+	{
+		ID:          "appsupport-trae-cn",
+		Name:        "Trae CN Cache",
+		Description: "Trae CN IDE cache and data",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Trae CN"},
+		},
+	},
+	{
+		ID:          "appsupport-claude",
+		Name:        "Claude Cache",
+		Description: "Claude desktop app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Claude"},
+		},
+	},
+	{
+		ID:          "appsupport-cursor",
+		Name:        "Cursor Cache",
+		Description: "Cursor IDE cache and data",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Cursor"},
+		},
+	},
+	{
+		ID:          "appsupport-google",
+		Name:        "Google App Data",
+		Description: "Google apps (Chrome profiles, etc.)",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Google"},
+		},
+	},
+	{
+		ID:          "appsupport-lark",
+		Name:        "Lark/Feishu Cache",
+		Description: "Lark/Feishu app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/LarkInternational"},
+		},
+	},
+	{
+		ID:          "appsupport-quark",
+		Name:        "Quark Cache",
+		Description: "Quark browser cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Quark"},
+		},
+	},
+	{
+		ID:          "appsupport-discord",
+		Name:        "Discord Cache",
+		Description: "Discord app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/discord"},
+		},
+	},
+	{
+		ID:          "appsupport-doubao",
+		Name:        "Doubao Cache",
+		Description: "Doubao (ByteDance AI) app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Doubao"},
+		},
+	},
+	{
+		ID:          "appsupport-cherrystudio",
+		Name:        "CherryStudio Cache",
+		Description: "CherryStudio app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/CherryStudio"},
+		},
+	},
+	{
+		ID:          "appsupport-qoder",
+		Name:        "Qoder Cache",
+		Description: "Qoder app cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/Qoder"},
+		},
+	},
+	{
+		ID:          "appsupport-clouddocs",
+		Name:        "CloudDocs Cache",
+		Description: "iCloud Documents local cache",
+		Platforms:   []string{"macos"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "~/Library/Application Support/CloudDocs"},
+		},
+	},
 }
