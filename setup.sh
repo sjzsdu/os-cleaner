@@ -32,6 +32,9 @@ mkdir -p "$HOME/.local/bin"
 cp os-cleaner "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/os-cleaner"
 
+# 删除本地构建产物
+rm -f os-cleaner
+
 echo "========================================"
 echo "安装完成！"
 echo "========================================"

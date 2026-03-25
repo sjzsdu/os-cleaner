@@ -5,6 +5,7 @@ A cross-platform system cache cleaner for macOS and Linux.
 ## Features
 
 - **Scan**: Discover how much space different caches are using
+- **Top**: Find the largest files and directories in any folder
 - **Inspect**: See what's actually inside each cache category
 - **Active**: Detect which packages your projects are using
 - **Clean**: Safely remove cache files with recoverable deletion support
@@ -60,6 +61,54 @@ Find caches older than a specific time:
 os-cleaner scan --older-than 90d   # 90 days
 os-cleaner scan --older-than 6m    # 6 months
 ```
+
+### Find Largest Files
+
+Scan any directory to find the largest files and directories:
+
+```bash
+os-cleaner top
+```
+
+Output:
+```
+Disk Usage for: /Users/you/projects
+Total: 2.3 GB
+
+  Name                                                          Size      Type
+  ────────────────────────────────────────────────────────────  ──────────  ────────
+   1. node_modules                                               890.5 MB  dir (12453 files) ⚡
+   2. .git                                                       456.2 MB  dir (8921 files)
+   3. build                                                      234.1 MB  dir (342 files)
+   4. video-asset.mp4                                            1.2 GB    file ⚠️
+
+  Summary:
+    1 item(s) ≥ 1GB (red)
+    1 item(s) ≥ 100MB (yellow)
+```
+
+Scan a specific directory:
+
+```bash
+os-cleaner top ~/Downloads
+os-cleaner top /var/log
+```
+
+Limit results:
+
+```bash
+os-cleaner top -n 10     # Show top 10 largest items
+```
+
+JSON output:
+
+```bash
+os-cleaner top --json
+```
+
+Color coding:
+- **Yellow** ⚡ — items ≥ 100MB
+- **Red** ⚠️ — items ≥ 1GB
 
 ### Inspect Cache Contents
 
