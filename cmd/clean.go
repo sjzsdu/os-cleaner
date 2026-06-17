@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"strings"
-
 	"github.com/juzhongsun/os-cleaner/internal/cleaner"
 	"github.com/juzhongsun/os-cleaner/internal/registry"
 	"github.com/spf13/cobra"
@@ -41,8 +39,7 @@ Examples:
 		}
 
 		if len(args) > 0 {
-			// Try to find category by ID or name
-			resolved := resolveCategory(args[0])
+			resolved := registry.FindCategory(args[0])
 			if resolved == nil {
 				// Show available categories and exit
 				cmd.Println("Category not found:", args[0])
@@ -64,33 +61,6 @@ func init() {
 	cleanCmd.Flags().BoolVar(&recoverable, "recoverable", false, "Compress files before deletion for recovery")
 	cleanCmd.Flags().StringSliceVarP(&categories, "category", "c", []string{}, "Specific categories to clean")
 	rootCmd.AddCommand(cleanCmd)
-}
-
-func resolveCategory(input string) *registry.CacheCategory {
-	input = strings.TrimSpace(input)
-	inputLower := strings.ToLower(input)
-
-	// First try exact ID match
-	cat := registry.GetCategoryByID(input)
-	if cat != nil {
-		return cat
-	}
-
-	// Try exact name match (case insensitive)
-	for _, c := range registry.GetCategoriesByPlatform() {
-		if strings.ToLower(c.Name) == inputLower {
-			return &c
-		}
-	}
-
-	// Try partial match (ID or name contains input)
-	for _, c := range registry.GetCategoriesByPlatform() {
-		if strings.Contains(strings.ToLower(c.ID), inputLower) || strings.Contains(strings.ToLower(c.Name), inputLower) {
-			return &c
-		}
-	}
-
-	return nil
 }
 
 func showCategories(cmd *cobra.Command) {

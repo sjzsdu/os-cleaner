@@ -62,6 +62,28 @@ func Scan(opts ScanOptions) error {
 
 	progress.Stop()
 
+	// Apply min-size filter: respect explicit --min-size, otherwise use SuggestMinSize per category
+	if opts.MinSize > 0 {
+		var filtered []ScanResult
+		for _, r := range results {
+			if r.Size >= opts.MinSize {
+				filtered = append(filtered, r)
+			}
+		}
+		results = filtered
+	} else {
+		// Apply per-category SuggestMinSize when no explicit --min-size provided
+		var filtered []ScanResult
+		for _, r := range results {
+			cat := registry.GetCategoryByID(r.Category)
+			if cat != nil && cat.SuggestMinSize > 0 && r.Size < cat.SuggestMinSize {
+				continue
+			}
+			filtered = append(filtered, r)
+		}
+		results = filtered
+	}
+
 	if opts.JSON {
 		return outputJSON(results)
 	}
@@ -83,14 +105,23 @@ type ScanResult struct {
 	Exists      bool                 `json:"exists"`
 }
 
+// filesDisplay returns the file count display string.
+// Returns "-" when file count is unknown (default du -sk mode).
+func (r *ScanResult) filesDisplay() string {
+	if r.FileCount == 0 {
+		return "-"
+	}
+	return fmt.Sprintf("%d", r.FileCount)
+}
+
 // ScanOptions defines options for scanning
 type ScanOptions struct {
-	Parallel  bool
 	Verbose   bool
 	JSON      bool
 	Category  string
 	ShowStale bool
 	OlderThan time.Duration
+	MinSize   int64 // Minimum size in bytes; results below this are hidden
 }
 
 func scanCategory(cat registry.CacheCategory, opts ScanOptions) ScanResult {
@@ -106,7 +137,7 @@ func scanCategory(cat registry.CacheCategory, opts ScanOptions) ScanResult {
 
 	// Scan each path in the category
 	for _, pathRule := range cat.Paths {
-		expandedPath := registry.ExpandPath(pathRule.Path)
+		expandedPath := utils.ExpandPath(pathRule.Path)
 
 		info, err := os.Stat(expandedPath)
 		if err != nil {
@@ -134,7 +165,7 @@ func scanCategory(cat registry.CacheCategory, opts ScanOptions) ScanResult {
 
 	// Only calculate time if needed (stale detection)
 	if opts.ShowStale || opts.OlderThan > 0 {
-		expandedPath := registry.ExpandPath(cat.Paths[0].Path)
+		expandedPath := utils.ExpandPath(cat.Paths[0].Path)
 		if info, err := os.Stat(expandedPath); err == nil && info.IsDir() {
 			_, _, _, oldest := calculateDirSizeAndTime(expandedPath)
 			if !oldest.IsZero() {
@@ -149,6 +180,7 @@ func scanCategory(cat registry.CacheCategory, opts ScanOptions) ScanResult {
 func fastGetSize(path string) (int64, int64) {
 	// Use du -sk for fast size calculation (size in KB)
 	// macOS compatible: -s summary, -k kilobytes
+	// du is C-based and 10x-100x faster than Go filepath.Walk for large dirs
 	cmd := exec.Command("du", "-sk", path)
 	output, err := cmd.Output()
 	if err != nil {
@@ -161,13 +193,10 @@ func fastGetSize(path string) (int64, int64) {
 		sizeKB, _ := strconv.ParseInt(parts[0], 10, 64)
 		// Convert KB to bytes
 		size := sizeKB * 1024
-		// Estimate file count based on size (rough approximation)
-		// Average file size ~4KB for typical caches
-		files := size / 4096
-		if files < 1 {
-			files = 1
-		}
-		return size, files
+		// File count not available from du -sk efficiently.
+		// Accurate count requires filepath.Walk which is slow on large dirs.
+		// Accurate count is computed in calculateDirSizeAndTime() when --stale is used.
+		return size, 0
 	}
 	return 0, 0
 }
@@ -310,11 +339,12 @@ func outputTable(results []ScanResult, verbose, showStale bool, olderThan time.D
 			ageStr = r.LastAccess.Format("2006-01-02")
 		}
 
+		filesStr := r.filesDisplay()
 		if ageStr != "" {
 			fmt.Printf(headerFormat,
 				utils.Bold(r.Name),
 				utils.Bold(utils.FormatSize(r.Size)),
-				utils.Dim(fmt.Sprintf("%d", r.FileCount)),
+				utils.Dim(filesStr),
 				levelColor(levelStr),
 				utils.Dim(ageStr),
 			)
@@ -322,7 +352,7 @@ func outputTable(results []ScanResult, verbose, showStale bool, olderThan time.D
 			fmt.Printf("  %-25s %12s %10s %8s\n",
 				utils.Bold(r.Name),
 				utils.Bold(utils.FormatSize(r.Size)),
-				utils.Dim(fmt.Sprintf("%d", r.FileCount)),
+				utils.Dim(filesStr),
 				levelColor(levelStr),
 			)
 		}

@@ -6,8 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-
-	"github.com/juzhongsun/os-cleaner/internal/registry"
 )
 
 // FormatSize formats bytes into human readable string
@@ -129,92 +127,4 @@ func SanitizeCategoryName(name string) string {
 	name = strings.ReplaceAll(name, " ", "-")
 	name = strings.ReplaceAll(name, "/", "-")
 	return name
-}
-
-// PrintMatched prints matched categories
-func PrintMatched(msg string, categories []registry.CacheCategory) {
-	fmt.Println(Bold(msg))
-	for _, c := range categories {
-		fmt.Printf("  - %s (%s)\n", c.ID, c.Name)
-	}
-}
-
-// PrintSection prints a section header
-func PrintSection(name string, fn func()) {
-	fmt.Println()
-	fmt.Println(Bold("═══════════════════════════════════════════════════════════════"))
-	fmt.Println(Bold("  " + name))
-	fmt.Println(Bold("═══════════════════════════════════════════════════════════════"))
-	fmt.Println()
-	fn()
-}
-
-// PrintCategoryHeader prints category header
-func PrintCategoryHeader(name string, size int64, extra string) {
-	fmt.Println()
-	fmt.Printf("%s %s", Bold(name), Bold(FormatSize(size)))
-	if extra != "" {
-		fmt.Printf(" %s", extra)
-	}
-	fmt.Println()
-}
-
-// PrintSubSection prints a subsection header
-func PrintSubSection(name string) {
-	fmt.Println()
-	fmt.Println(Dim("  " + name))
-}
-
-// PrintItem prints an item
-func PrintItem(name, size string) {
-	if size != "" {
-		fmt.Printf("    %-50s %s\n", name, Dim(size))
-	} else {
-		fmt.Printf("    %s\n", name)
-	}
-}
-
-// GetDirSizeAndCount returns size and file count
-func GetDirSizeAndCount(path string) (int64, int64) {
-	var size int64
-	var count int64
-
-	filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
-		if err != nil {
-			return nil
-		}
-		if !info.IsDir() {
-			size += info.Size()
-			count++
-		}
-		return nil
-	})
-
-	return size, count
-}
-
-// ShowNpmRegistryBreakdown shows npm cache by registry
-func ShowNpmRegistryBreakdown(path string, top int) {
-	registryPath := filepath.Join(path, "_cacache", "content-v2", "sha512")
-	if !PathExists(registryPath) {
-		return
-	}
-
-	cmd := exec.Command("du", "-h", "-d", "1", registryPath)
-	output, _ := cmd.Output()
-
-	lines := strings.Split(string(output), "\n")
-	PrintSubSection("By registry source:")
-	for i, line := range lines {
-		if i >= top {
-			break
-		}
-		if strings.TrimSpace(line) == "" {
-			continue
-		}
-		parts := strings.Fields(line)
-		if len(parts) >= 2 {
-			PrintItem(parts[1], parts[0])
-		}
-	}
 }

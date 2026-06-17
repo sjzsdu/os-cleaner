@@ -47,15 +47,18 @@ jobs:
         shell: bash
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Run tests
+        run: go test ./...
+
       - name: Build (Unix)
         if: matrix.goos != 'windows'
         run: |
-          CGO_ENABLED=0 go build -ldflags="-s -w" -o os-cleaner-${{ steps.get_tag.outputs.TAG }}-${{ matrix.goos }}-${{ matrix.goarch }} .
+          CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/juzhongsun/os-cleaner/cmd.Version=${{ steps.get_tag.outputs.TAG }}" -o os-cleaner-${{ steps.get_tag.outputs.TAG }}-${{ matrix.goos }}-${{ matrix.goarch }} .
 
       - name: Build (Windows)
         if: matrix.goos == 'windows'
         run: |
-          CGO_ENABLED=0 go build -ldflags="-s -w" -o os-cleaner-${{ steps.get_tag.outputs.TAG }}-${{ matrix.goos }}-${{ matrix.goarch }}.exe .
+          CGO_ENABLED=0 go build -ldflags="-s -w -X github.com/juzhongsun/os-cleaner/cmd.Version=${{ steps.get_tag.outputs.TAG }}" -o os-cleaner-${{ steps.get_tag.outputs.TAG }}-${{ matrix.goos }}-${{ matrix.goarch }}.exe .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

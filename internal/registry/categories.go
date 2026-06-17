@@ -510,6 +510,141 @@ var categories = []CacheCategory{
 		},
 	},
 
+	// ==================== AI Agent Tools ====================
+	{
+		ID:             "opencode-cache",
+		Name:           "OpenCode Cache",
+		Description:    "OpenCode AI coding agent cache, skills, and sessions",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.config/opencode"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB — hide if smaller
+	},
+	{
+		ID:             "claude-code-cache",
+		Name:           "Claude Code Cache",
+		Description:    "Claude Code AI coding agent skills, config, and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.claude"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "codex-cli-cache",
+		Name:           "Codex CLI Cache",
+		Description:    "OpenAI Codex CLI config, skills, and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.codex"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "jcode-cache",
+		Name:           "jcode Cache",
+		Description:    "jcode AI coding agent cache and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.jcode"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "hermes-agent-cache",
+		Name:           "Hermes Agent Cache",
+		Description:    "Hermes Agent (Nous Research) persistent memory, skills, and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.hermes"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "forge-agent-cache",
+		Name:           "Forge Cache",
+		Description:    "Forge universal CLI for coding agents — config and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.forge"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "aider-cache",
+		Name:           "Aider Cache",
+		Description:    "Aider AI coding agent cache and config",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.aider"},
+			{Path: "~/.cache/aider"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "continue-dev-cache",
+		Name:           "Continue.dev Cache",
+		Description:    "Continue.dev AI coding assistant cache and config",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.continue"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "cline-cache",
+		Name:           "Cline Cache",
+		Description:    "Cline AI coding agent cache and session data",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.cline"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "gemini-cli-cache",
+		Name:           "Gemini CLI Cache",
+		Description:    "Google Gemini CLI coding agent cache and config",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.gemini"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "copilot-cache",
+		Name:           "GitHub Copilot Cache",
+		Description:    "GitHub Copilot CLI and extension cache",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.copilot"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+	{
+		ID:             "windsurf-cache",
+		Name:           "Windsurf/Codeium Cache",
+		Description:    "Windsurf (formerly Codeium) IDE extension and AI agent cache",
+		Platforms:      []string{"macos", "linux"},
+		SafetyLevel:    Safe,
+		Paths: []PathRule{
+			{Path: "~/.codeium"},
+		},
+		SuggestMinSize: 10 * 1024 * 1024, // 10MB
+	},
+
 	// ==================== Application Support - Individual Apps ====================
 	{
 		ID:          "appsupport-trae",
@@ -629,6 +764,119 @@ var categories = []CacheCategory{
 		SafetyLevel: Caution,
 		Paths: []PathRule{
 			{Path: "~/Library/Application Support/CloudDocs"},
+		},
+	},
+
+	// ==================== Windows ====================
+	{
+		ID:          "windows-temp",
+		Name:        "Windows Temp Files",
+		Description: "Windows temporary files under user profile",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/Temp"},
+		},
+	},
+	{
+		ID:          "windows-prefetch",
+		Name:        "Windows Prefetch",
+		Description: "Windows application prefetch cache",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "C:\\Windows\\Prefetch"},
+		},
+	},
+	{
+		ID:          "windows-software-distribution",
+		Name:        "Windows Update Cache",
+		Description: "Windows Update download cache",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "C:\\Windows\\SoftwareDistribution\\Download"},
+		},
+	},
+	{
+		ID:          "windows-system-temp",
+		Name:        "Windows System Temp",
+		Description: "Windows system temporary files",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "C:\\Windows\\Temp"},
+		},
+	},
+	{
+		ID:          "windows-recycle-bin",
+		Name:        "Windows Recycle Bin",
+		Description: "Windows recycle bin for system drives",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "C:\\$Recycle.Bin"},
+		},
+	},
+	{
+		ID:          "npm-cache-windows",
+		Name:        "npm Cache (Windows)",
+		Description: "npm downloaded packages (Windows path)",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/npm-cache"},
+		},
+		CleanCmd: "npm cache clean --force",
+	},
+	{
+		ID:          "pip-cache-windows",
+		Name:        "Python pip Cache (Windows)",
+		Description: "pip downloaded packages (Windows path)",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/pip/cache"},
+		},
+	},
+	{
+		ID:          "chrome-cache-windows",
+		Name:        "Chrome Cache (Windows)",
+		Description: "Google Chrome browser cache (Windows path)",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/Google/Chrome/User Data/Default/Cache"},
+		},
+	},
+	{
+		ID:          "edge-cache",
+		Name:        "Edge Cache",
+		Description: "Microsoft Edge browser cache",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/Microsoft/Edge/User Data/Default/Cache"},
+		},
+	},
+	{
+		ID:          "windows-thumbnails",
+		Name:        "Windows Thumbnail Cache",
+		Description: "Windows thumbnail cache for files and images",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Safe,
+		Paths: []PathRule{
+			{Path: "~/AppData/Local/Microsoft/Windows/Explorer"},
+		},
+	},
+	{
+		ID:          "windows-delivery-optimization",
+		Name:        "Windows Delivery Optimization",
+		Description: "Windows Update delivery optimization cache",
+		Platforms:   []string{"windows"},
+		SafetyLevel: Caution,
+		Paths: []PathRule{
+			{Path: "C:\\Windows\\SoftwareDistribution\\DeliveryOptimization"},
 		},
 	},
 }

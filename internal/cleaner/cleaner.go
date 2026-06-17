@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -95,7 +94,7 @@ func cleanCategory(cat registry.CacheCategory, opts CleanOptions) CleanResult {
 	var permissionErrors []string
 
 	for _, pathRule := range cat.Paths {
-		expandedPath := registry.ExpandPath(pathRule.Path)
+		expandedPath := utils.ExpandPath(pathRule.Path)
 
 		if !utils.PathExists(expandedPath) {
 			continue
@@ -296,8 +295,4 @@ func safeRemoveWithDetails(path string) (int64, []string) {
 	return deletedSize, errors
 }
 
-func safeRemove(path string) error {
-	cmd := exec.Command("rm", "-rf", path)
-	err := cmd.Run()
-	return err
-}
+

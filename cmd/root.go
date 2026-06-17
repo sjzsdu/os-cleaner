@@ -11,7 +11,8 @@ import (
 var (
 	verbose    bool
 	jsonOutput bool
-	cfgFile    string
+	// Version is set at build time via ldflags (see .github/workflows/release.yml)
+	Version = "dev"
 )
 
 var rootCmd = &cobra.Command{
@@ -29,7 +30,7 @@ Examples:
   os-cleaner clean xcode             # Clean Xcode caches
   os-cleaner clean --safe            # Clean all safe categories
   os-cleaner clean --dry-run         # Preview without deleting`,
-	Version: "0.1.0",
+	Version: Version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		startTime = time.Now()
 	},
@@ -52,7 +53,6 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOutput, "json", false, "JSON output")
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default is ./configs/default.yaml)")
 }
 
 func FormatDuration(d time.Duration) string {
